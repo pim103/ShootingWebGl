@@ -1,6 +1,6 @@
 import { Control } from "./control.js";
 import { Camera } from "./camera.js";
-// import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
+import { GLTFLoader } from '../jsm/loaders/GLTFLoader.js';
 
 export class Scene {
     scene;
@@ -60,7 +60,8 @@ export class Scene {
 
         window.addEventListener( 'resize', this.onWindowResize, false );
 
-        this.createCube();
+        // this.createCube();
+        this.importGLTF();
     }
 
     async initBackground() {
@@ -84,6 +85,22 @@ export class Scene {
 
         this.objectInScene.push(cube);
         this.scene.add(cube);
+    }
+
+    importGLTF() {
+        const path = 'obj/tree.glb';
+
+        const loader = new GLTFLoader()
+            .setPath('../obj/');
+        loader.load('tree.glb', (gltf) => {
+            gltf.scene.traverse((child) => {
+                if (child.isMesh) {
+
+                }
+            });
+
+            this.scene.add(gltf.scene);
+        });
     }
 
     updateObject() {

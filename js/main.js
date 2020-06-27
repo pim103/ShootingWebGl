@@ -9,27 +9,27 @@ function animate() {
     currentScene.updateObject();
 }
 
-	// Physics variables
-	var gravityConstant = 7.8;
-	var collisionConfiguration;
-	var dispatcher;
-	var broadphase;
-	var solver;
-	var physicsWorld;
-	var margin = 0.05;
+// Physics variables
+var gravityConstant = 7.8;
+var collisionConfiguration;
+var dispatcher;
+var broadphase;
+var solver;
+var physicsWorld;
+var margin = 0.05;
 
-	// Rigid bodies include all movable objects
-	var rigidBodies = [];
+// Rigid bodies include all movable objects
+var rigidBodies = [];
 
-	var pos = new THREE.Vector3();
-	var quat = new THREE.Quaternion();
-	var transformAux1;
-	var tempBtVec3_1;
-	var mouseCoords = new THREE.Vector2()
-	var raycaster = new THREE.Raycaster();
-	var ballMaterial = new THREE.MeshPhongMaterial( { color: 0x202020 } );
+var pos = new THREE.Vector3();
+var quat = new THREE.Quaternion();
+var transformAux1;
+var tempBtVec3_1;
+var mouseCoords = new THREE.Vector2()
+var raycaster = new THREE.Raycaster();
+var ballMaterial = new THREE.MeshPhongMaterial( { color: 0x202020 } );
 
-	var clock = new THREE.Clock();
+var clock = new THREE.Clock();
 
 $('document').ready(() => {
     currentScene.initInitialScene();
