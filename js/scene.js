@@ -76,11 +76,11 @@ export class Scene {
 
     initBackground() {
         const path = "imgs/skybox/";
-        const format = ".jpg";
+        const format = ".png";
         const urls = [
-            path + 'posx' + format, path + 'negx' + format,
-            path + 'posy' + format, path + 'negy' + format, 
-            path + 'posz' + format, path + 'negz' + format
+            path + 'right' + format, path + 'left' + format,
+            path + 'top' + format, path + 'bottom' + format, 
+            path + 'back' + format, path + 'front' + format
         ];
 
         const textureBackground = new THREE.CubeTextureLoader().load(urls);
