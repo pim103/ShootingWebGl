@@ -58,13 +58,15 @@ export class Scene {
 
         this.scene.add( light );
 
-        window.addEventListener( 'resize', this.onWindowResize, false );
+        window.addEventListener( 'resize', () => {
+            this.onWindowResize();
+        }, false );
 
-        // this.createCube();
+        this.createCube();
         this.importGLTF();
     }
 
-    async initBackground() {
+    initBackground() {
         const path = "imgs/skybox/";
         const format = ".jpg";
         const urls = [
@@ -88,28 +90,32 @@ export class Scene {
     }
 
     importGLTF() {
-        const path = 'obj/tree.glb';
+        let obj;
 
         const loader = new GLTFLoader()
             .setPath('../obj/');
         loader.load('tree.glb', (gltf) => {
-            gltf.scene.traverse((child) => {
+            obj = gltf.scene;
+            obj.traverse((child) => {
                 if (child.isMesh) {
 
                 }
             });
 
-            this.scene.add(gltf.scene);
+            obj.position.y -= 3;
+            obj.position.x += 10;
+            this.objectInScene.push(obj);
+            this.scene.add(obj);
         });
     }
 
     updateObject() {
-        this.objectInScene.forEach(object => {
-            object.rotation.x += 0.01;
-            object.rotation.y += 0.01;
-        });
+        // this.objectInScene.forEach(object => {
+        //     object.rotation.x += 0.01;
+        //     object.rotation.y += 0.01;
+        // });
 
-        this.control.playIntent();
+        this.control.playIntent(this.objectInScene);
     }
 
     render() {
@@ -135,7 +141,6 @@ export class Scene {
         this.renderer.setSize( window.innerWidth, window.innerHeight );
 
     }
-
 
     initInput(mouseCoords,raycaster,currentScene,ballMaterial,margin,pos,quat,rigidBodies,physicsWorld) {
 
