@@ -99,8 +99,8 @@ export class Physics {
         window.addEventListener( 'mousedown', function ( event ) {
 
             scenePhysics.mouseCoords.set(
-                ( event.clientX / window.innerWidth ) * 2 - 1,
-                - ( event.clientY / window.innerHeight ) * 2 + 1
+                ( (window.innerWidth/2) / window.innerWidth ) * 2 - 1,
+                - ( (window.innerHeight/2) / window.innerHeight ) * 2 + 1
             );
 
             scenePhysics.raycaster.setFromCamera(scenePhysics.mouseCoords, currentScene.getCamera().getCamera());

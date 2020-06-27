@@ -179,7 +179,7 @@ export class Scene {
         var quat = new THREE.Quaternion();
 
         // Ground
-        pos.set( 0, -0.5, 0 );
+        pos.set( 0, -2, 0 );
         quat.set( 0, 0, 0, 1 );
         //var ground = createParalellepiped( 40, 1, 40, 0, pos, quat, new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ), scenePhysics);
         var ground = new THREE.Mesh( new THREE.BoxBufferGeometry( 40, 1, 40, 1, 1, 1 ), new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ) );
@@ -215,7 +215,7 @@ export class Scene {
         var numBricksLength = 6;
         var numBricksHeight = 4;
         var z0 = - numBricksLength * brickLength * 0.5;
-        pos.set( 1, brickHeight * 0.5, z0 );
+        pos.set( 1, brickHeight * 0.5 -1.5, z0 );
         quat.set( 0, 0, 0, 1 );
         for ( var j = 0; j < numBricksHeight; j ++ ) {
 
