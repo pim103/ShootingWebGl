@@ -11,6 +11,7 @@ export class Control {
     
     velocity = new THREE.Vector3();
     direction = new THREE.Vector3();
+    raycaster;
 
     onKeyDown(event) {
         switch ( event.keyCode ) {
@@ -37,6 +38,10 @@ export class Control {
             case 32: // space
                 if ( canJump === true ) velocity.y += 350;
                 canJump = false;
+                break;
+            
+            case 76: //l
+                this.control.lock();
                 break;
         }
     };
@@ -67,10 +72,14 @@ export class Control {
 
     initControl(camera) {
         this.control = new PointerLockControls(camera, document.body);
-        this.control.lock();
 
         this.prevTime = performance.now();
 
+        this.raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3(0, -1, 0), 0, 10);
+
+        document.addEventListener('click', () => {
+            this.control.lock();
+        }, false);
         document.addEventListener('keydown', () => {
             this.onKeyDown(event);
         }, false);
@@ -83,10 +92,19 @@ export class Control {
         return this.control;
     }
 
-    playIntent() {
+    playIntent(objects) {
         var time = performance.now();
         var delta = ( time - this.prevTime ) / 1000;
         
+        this.raycaster.ray.origin.copy(this.control.getObject().position);
+        this.raycaster.ray.origin.y -= 10;
+        var intersections = this.raycaster.intersectObjects(objects);
+        var onObject = intersections.length > 0;
+
+        if (onObject) {
+            console.log("Touche quelque chose");
+        }
+
         this.velocity.x -= this.velocity.x * 10.0 * delta;
         this.velocity.z -= this.velocity.z * 10.0 * delta;
         this.velocity.y -= 9.8 * 100.0 * delta;
