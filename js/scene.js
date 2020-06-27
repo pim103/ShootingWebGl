@@ -203,7 +203,8 @@ export class Scene {
 
         ground.userData.physicsBody = body;
 
-        this.getScene().add( ground );
+        this.objectInScene.push(ground);
+        this.getScene().add(ground);
 
         scenePhysics.physicsWorld.addRigidBody( body );
 
@@ -262,11 +263,12 @@ export class Scene {
 
                 brick.userData.physicsBody = body;
 
-                this.getScene().add( brick );
+                this.objectInScene.push(brick)
+                this.getScene().add(brick);
 
                 if ( brickMassCurrent > 0 ) {
 
-                    scenePhysics.rigidBodies.push( brick );
+                    scenePhysics.rigidBodies.push(brick);
 
                     // Disable deactivation
                     body.setActivationState( 4 );

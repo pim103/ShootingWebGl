@@ -77,7 +77,7 @@ export class Physics {
 
 		object.userData.physicsBody = body;
 
-		scene.add( object );
+		scene.add(object);
 
 		if ( mass > 0 ) {
 
