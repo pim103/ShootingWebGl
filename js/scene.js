@@ -11,6 +11,8 @@ export class Scene {
     textureLoader;
 
     objectInScene;
+    mixer;
+    clock;
 
     spheres;
 
@@ -21,6 +23,8 @@ export class Scene {
         this.scene.background = new THREE.Color( 0xbfd1e5 );
         this.camera = new Camera();
         this.control = new Control();
+
+        this.clock = new THREE.Clock();
 
         this.camera.initCamera();
         this.control.initControl(this.camera.getCamera());
@@ -108,7 +112,12 @@ export class Scene {
 
             obj.position.y -= 3;
             obj.position.x += 10;
-            obj.scale *= 10;
+            obj.scale.x *= 8;
+            obj.scale.y *= 8;
+            obj.scale.z *= 8;
+
+            this.mixer = new THREE.AnimationMixer(obj);
+            this.mixer.clipAction(gltf.animations[0]).play();
 
             this.objectInScene.push(obj);
             this.scene.add(obj);
@@ -117,6 +126,9 @@ export class Scene {
 
     updateObject() {
         this.control.playIntent(this.objectInScene);
+
+        var delta = this.clock.getDelta();
+        this.mixer.update(delta);
 
         const timer = 0.0001 * Date.now();
         // for (let i = 0; i < this.spheres.length; i++) {

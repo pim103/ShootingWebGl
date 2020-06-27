@@ -140,8 +140,8 @@ export class Control {
         this.direction.x = Number( this.moveRight ) - Number( this.moveLeft );
         this.direction.normalize(); // this ensures consistent movements in all directions
 
-        if ( this.moveForward || this.moveBackward ) this.velocity.z -= this.direction.z * 75.0 * delta;
-        if ( this.moveLeft || this.moveRight ) this.velocity.x -= this.direction.x * 75.0 * delta;
+        if ( this.moveForward || this.moveBackward ) this.velocity.z -= this.direction.z * 150.0 * delta;
+        if ( this.moveLeft || this.moveRight ) this.velocity.x -= this.direction.x * 150.0 * delta;
     
         this.control.moveRight( - this.velocity.x * delta );
         this.control.moveForward( - this.velocity.z * delta );
