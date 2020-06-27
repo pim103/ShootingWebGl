@@ -1,4 +1,4 @@
-class Camera {
+export class Camera {
     camera;
 
     initCamera() {

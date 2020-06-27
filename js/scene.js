@@ -1,4 +1,6 @@
 import { Control } from "./control.js";
+import { Camera } from "./camera.js";
+// import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
 
 export class Scene {
     scene;
