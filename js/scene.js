@@ -1,6 +1,7 @@
 import { Control } from "./control.js";
 import { Camera } from "./camera.js";
 import { GLTFLoader } from '../jsm/loaders/GLTFLoader.js';
+import { FresnelShader } from '../jsm/shaders/FresnelShader.js';
 
 export class Scene {
     scene;
@@ -10,6 +11,8 @@ export class Scene {
     textureLoader;
 
     objectInScene;
+
+    spheres;
 
     initInitialScene() {
         this.objectInScene = [];
@@ -62,7 +65,8 @@ export class Scene {
             this.onWindowResize();
         }, false );
 
-        this.createCube();
+        // this.createSpheres();
+        // this.createCube();
         this.importGLTF();
     }
 
@@ -94,7 +98,7 @@ export class Scene {
 
         const loader = new GLTFLoader()
             .setPath('../obj/');
-        loader.load('tree.glb', (gltf) => {
+        loader.load('ShootingScene.gltf', (gltf) => {
             obj = gltf.scene;
             obj.traverse((child) => {
                 if (child.isMesh) {
@@ -104,18 +108,23 @@ export class Scene {
 
             obj.position.y -= 3;
             obj.position.x += 10;
+            obj.scale *= 10;
+
             this.objectInScene.push(obj);
             this.scene.add(obj);
         });
     }
 
     updateObject() {
-        // this.objectInScene.forEach(object => {
-        //     object.rotation.x += 0.01;
-        //     object.rotation.y += 0.01;
-        // });
-
         this.control.playIntent(this.objectInScene);
+
+        const timer = 0.0001 * Date.now();
+        // for (let i = 0; i < this.spheres.length; i++) {
+        //     let sphere = this.spheres[i];
+
+        //     sphere.position.x = 10 * Math.cos( timer + i );
+        //     sphere.position.y = 10 * Math.sin( timer + i * 1.1 );
+        // }
     }
 
     render(scenePhysics) {
@@ -131,6 +140,37 @@ export class Scene {
 
     getCamera() {
         return this.camera;
+    }
+
+    createSpheres() {
+        this.spheres = [];
+
+        const geometry = new THREE.SphereBufferGeometry(100, 32, 16);
+
+        const shader = FresnelShader;
+        const uniforms = THREE.UniformsUtils.clone(shader.uniforms);
+
+        const material = new THREE.ShaderMaterial({
+            uniforms: uniforms,
+            vertexShader: shader.vertexShader,
+            fragmentShader: shader.fragmentShader
+        });
+
+        for (let i = 0; i < 500; i++) {
+            const mesh = new THREE.Mesh(geometry, material);
+
+            // uniforms["tCube"].value = this.scene.background;
+
+            mesh.position.x = Math.random() * 2 + 1;
+            mesh.position.y = Math.random() * 2 + 1;
+            mesh.position.z = Math.random() * 2 + 1;
+
+            mesh.scale.x = mesh.scale.y = mesh.scale.z = Math.random() * 3 + 1;
+
+            this.scene.add(mesh);
+
+            this.spheres.push(mesh);
+        }
     }
 
     createParalellepiped( sx, sy, sz, mass, pos, quat, material, scenePhysics ) {
@@ -170,7 +210,6 @@ export class Scene {
         scenePhysics.physicsWorld.addRigidBody( body );
 
         return threeObject;
-
     }
 
     createObjects(scenePhysics) {
@@ -272,7 +311,6 @@ export class Scene {
 
                     // Disable deactivation
                     body.setActivationState( 4 );
-
                 }
 
                 scenePhysics.physicsWorld.addRigidBody( body );
@@ -302,7 +340,6 @@ export class Scene {
         this.camera.getCamera().camera.updateProjectionMatrix();
 
         this.renderer.setSize( window.innerWidth, window.innerHeight );
-
     }
 
 }
