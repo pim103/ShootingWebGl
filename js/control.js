@@ -15,12 +15,12 @@ export class Control {
     onKeyDown(event) {
         switch ( event.keyCode ) {
             case 38: // up
-            case 87: // w
+            case 90: // z
                 this.moveForward = true;
                 break;
 
             case 37: // left
-            case 65: // a
+            case 81: // q
                 this.moveLeft = true;
                 break;
 
@@ -44,12 +44,12 @@ export class Control {
     onKeyUp(event) {
         switch ( event.keyCode ) {
             case 38: // up
-            case 87: // w
+            case 90: // z
                 this.moveForward = false;
                 break;
 
             case 37: // left
-            case 65: // a
+            case 81: // q
                 this.moveLeft = false;
                 break;
 
@@ -67,6 +67,7 @@ export class Control {
 
     initControl(camera) {
         this.control = new PointerLockControls(camera, document.body);
+        this.control.lock();
 
         this.prevTime = performance.now();
 

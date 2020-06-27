@@ -29,29 +29,16 @@ export class Scene {
 
     async initBackground() {
         const path = "imgs/skybox/";
+        const format = ".jpg";
+        const urls = [
+            path + 'posx' + format, path + 'negx' + format,
+            path + 'posy' + format, path + 'negy' + format, 
+            path + 'posz' + format, path + 'negz' + format
+        ];
 
-        let materialArray = [];
-        let texture_ft = new THREE.TextureLoader().load( path + 'negz.jpg');
-        let texture_bk = new THREE.TextureLoader().load( path + 'posz.jpg');
-        let texture_up = new THREE.TextureLoader().load( path + 'posy.jpg');
-        let texture_dn = new THREE.TextureLoader().load( path + 'negy.jpg');
-        let texture_rt = new THREE.TextureLoader().load( path + 'posx.jpg');
-        let texture_lf = new THREE.TextureLoader().load( path + 'negx.jpg');
-        
-        materialArray.push(new THREE.MeshBasicMaterial( { map: texture_ft }));
-        materialArray.push(new THREE.MeshBasicMaterial( { map: texture_bk }));
-        materialArray.push(new THREE.MeshBasicMaterial( { map: texture_up }));
-        materialArray.push(new THREE.MeshBasicMaterial( { map: texture_dn }));
-        materialArray.push(new THREE.MeshBasicMaterial( { map: texture_rt }));
-        materialArray.push(new THREE.MeshBasicMaterial( { map: texture_lf }));
-        
-        for (let i = 0; i < 6; i++) {
-            materialArray[i].side = THREE.BackSide;
-        }
+        const textureBackground = new THREE.CubeTextureLoader().load(urls);
 
-        let skyboxGeo = new THREE.BoxGeometry( 10000, 10000, 10000);
-        let skybox = new THREE.Mesh( skyboxGeo, materialArray );
-        this.scene.add( skybox );
+        this.scene.background = textureBackground;
     }
 
     createCube() {
