@@ -113,22 +113,24 @@ export class Control {
         var time = performance.now();
         var delta = ( time - this.prevTime ) / 1000;
         
+        let onObject = false;
+
         if (objects != undefined) {
             this.raycaster.ray.origin.copy(this.control.getObject().position);
             const intersections = this.raycaster.intersectObjects(objects, true);
 
-            const onObject = intersections.length > 0;
-
-            if (onObject) {
-                this.velocity.y = Math.max( 0, this.velocity.y );
-                this.canJump = true;
-            }
+            onObject = intersections.length > 0;
         }
         
 
         this.velocity.x -= this.velocity.x * 10.0 * delta;
         this.velocity.z -= this.velocity.z * 10.0 * delta;
         this.velocity.y -= 9.8 * 10.0 * delta;
+
+        if (onObject) {
+            this.velocity.y = Math.max( 0, this.velocity.y );
+            this.canJump = true;
+        }
 
         this.direction.z = Number( this.moveForward ) - Number( this.moveBackward );
         this.direction.x = Number( this.moveRight ) - Number( this.moveLeft );

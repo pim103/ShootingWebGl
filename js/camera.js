@@ -17,7 +17,7 @@ export class Camera {
         this.listener = new THREE.AudioListener();
         this.camera.add(this.listener);
 
-        var sound = new THREE.Audio(this.listener);
+        const sound = new THREE.Audio(this.listener);
 
         const audioLoader = new THREE.AudioLoader();
         audioLoader.load('../sounds/Yakov_Golman_-_02_-_Forest.mp3', (buffer) => {
