@@ -122,7 +122,7 @@ export class Control {
 
         if (objects != undefined) {
             this.raycaster.ray.origin.copy(this.control.getObject().position);
-            this.raycaster.ray.origin.x -= 2;
+            this.raycaster.ray.origin.x -= 0.5;
             this.raycaster.ray.origin.y -= 3;
             let intersections = this.raycaster.intersectObjects(objects, true);
             intersections.sort((intersect1, intersect2) => {
@@ -132,7 +132,7 @@ export class Control {
             onObject = intersections.length > 0 && intersections[0].distance < 0.7;
 
             if (!onObject) {
-                this.raycaster.ray.origin.x += 4;
+                this.raycaster.ray.origin.x += 1;
                 intersections = this.raycaster.intersectObjects(objects, true);
                 intersections.sort((intersect1, intersect2) => {
                     intersect1.distance - intersect2.distance;
