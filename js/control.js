@@ -15,7 +15,7 @@ export class Control {
     raycaster;
     mouse;
 
-    onKeyDown(event) {
+    onKeyDown(event, scene) {
         switch ( event.keyCode ) {
             case 38: // up
             case 90: // z
@@ -47,6 +47,11 @@ export class Control {
             case 76: //l
                 this.control.lock();
                 break;
+            case 86: //v
+                scene.fountain.forEach(element => {
+                    element.visible = !element.visible;
+                });
+                break;
         }
     };
 
@@ -74,7 +79,7 @@ export class Control {
         }
     };
 
-    initControl(camera) {
+    initControl(scene, camera) {
         this.control = new PointerLockControls(camera, document.body);
 
         this.prevTime = performance.now();
@@ -86,7 +91,7 @@ export class Control {
             this.control.lock();
         }, false);
         document.addEventListener('keydown', () => {
-            this.onKeyDown(event);
+            this.onKeyDown(event, scene);
         }, false);
         document.addEventListener('keyup', () => {
             this.onKeyUp(event);
@@ -127,7 +132,6 @@ export class Control {
             onObject = intersections.length > 0 && intersections[0].distance < 0.7;
 
             if (!onObject) {
-                console.log("second raycast");
                 this.raycaster.ray.origin.x += 4;
                 intersections = this.raycaster.intersectObjects(objects, true);
                 intersections.sort((intersect1, intersect2) => {

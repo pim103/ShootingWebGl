@@ -2,6 +2,7 @@ import { Control } from "./control.js";
 import { Camera } from "./camera.js";
 import { GLTFLoader } from '../jsm/loaders/GLTFLoader.js';
 import { FresnelShader } from '../jsm/shaders/FresnelShader.js';
+import { Water } from '../jsm/objects/Water2.js';
 
 export class Scene {
     scene;
@@ -15,6 +16,7 @@ export class Scene {
     clock;
 
     spheres;
+    fountain;
 
     initInitialScene() {
         this.objectInScene = [];
@@ -28,7 +30,7 @@ export class Scene {
         this.mixers = [];
 
         this.camera.initCamera();
-        this.control.initControl(this.camera.getCamera());
+        this.control.initControl(this, this.camera.getCamera());
         this.scene.add(this.control.getControl().getObject());
 
         /*this.renderer = new THREE.WebGLRenderer();
@@ -75,6 +77,71 @@ export class Scene {
         this.importGLTF("ShootingScene", "gltf");
         this.importGLTF("eagle", "gltf");
         this.importGLTF("canPos", "glb");
+        this.addWater();
+    }
+
+    addWater() {
+        const params = {
+            color: '#ffffff',
+            scale: 4,
+            flowX: -1,
+            flowY: 1
+        };
+        let waterGeometry = new THREE.PlaneBufferGeometry( 250, 5 );
+
+        let water = new Water(waterGeometry, {
+            color: params.color,
+            scale: params.scale,
+            flowDirection: new THREE.Vector2( params.flowX, params.flowY ),
+            textureWidth: 1024,
+            textureHeight: 1024
+        } );
+
+        water.position.y = -3.1;
+        water.position.z = -104;
+        water.rotation.x = Math.PI * - 0.5;
+        this.scene.add(water);
+
+        // Fountain
+
+        waterGeometry = new THREE.CircleGeometry( 7, 32 );
+        water = new Water(waterGeometry, {
+            color: params.color,
+            scale: params.scale,
+            flowDirection: new THREE.Vector2( params.flowX, params.flowY ),
+            textureWidth: 1024,
+            textureHeight: 1024
+        } );
+
+        water.position.y = -1;
+        water.position.z = -9;
+        water.position.x = -29;
+
+        water.rotation.x = Math.PI * - 0.5;
+        this.fountain = [];
+        
+        water.visible = false;
+        this.fountain.push(water);
+        this.scene.add(water);
+
+        waterGeometry = new THREE.CircleGeometry( 3, 8 );
+        water = new Water(waterGeometry, {
+            color: params.color,
+            scale: params.scale,
+            flowDirection: new THREE.Vector2( params.flowX, params.flowY ),
+            textureWidth: 1024,
+            textureHeight: 1024
+        } );
+
+        water.position.y = 0;
+        water.position.z = -9;
+        water.position.x = -29;
+
+        water.rotation.x = Math.PI * - 0.5;
+
+        water.visible = false;
+        this.fountain.push(water);
+        this.scene.add(water);
     }
 
     initBackground() {

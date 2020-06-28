@@ -10,8 +10,6 @@ function animate() {
     currentScene.updateObject();
 }
 
-
-
 $('document').ready(() => {
     currentScene.initInitialScene();
     Ammo().then( function ( AmmoLib ) {
