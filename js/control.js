@@ -141,7 +141,6 @@ export class Control {
                 onObject = intersections.length > 0 && intersections[0].distance < 0.7;
             }
         }
-        
 
         this.velocity.x -= this.velocity.x * 10.0 * delta;
         this.velocity.z -= this.velocity.z * 10.0 * delta;

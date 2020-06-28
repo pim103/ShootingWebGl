@@ -74,7 +74,7 @@ export class Scene {
 
         this.createSpheres();
         // this.createCube();
-        this.importGLTF("ShootingScene", "gltf");
+        this.importGLTF("ShootingSceneWithLights", "gltf");
         this.importGLTF("eagle", "gltf");
         this.addWater();
     }
@@ -96,6 +96,18 @@ export class Scene {
             textureHeight: 1024
         } );
 
+        const audioLoader = new THREE.AudioLoader();
+        const audio = new THREE.PositionalAudio(this.camera.getListener());
+
+        audioLoader.load('../sounds/waterWheel.mp3', (buffer) => {
+            audio.setBuffer(buffer);
+            audio.setLoop(true);
+            audio.setVolume(1);
+            audio.setRefDistance(2);
+            audio.play();
+        });
+
+        water.add(audio);
         water.position.y = -3.1;
         water.position.z = -104;
         water.rotation.x = Math.PI * - 0.5;

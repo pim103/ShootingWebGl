@@ -14,6 +14,10 @@ export class Camera {
         return this.camera;
     }
 
+    getListener() {
+        return this.listener;
+    }
+
     initListener() {
         this.listener = new THREE.AudioListener();
         this.camera.add(this.listener);
