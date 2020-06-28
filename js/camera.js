@@ -28,7 +28,7 @@ export class Camera {
         audioLoader.load('../sounds/The_Elder_Scrolls_Oblivion_Town_Music.mp3', (buffer) => {
             sound.setBuffer(buffer);
             sound.setLoop(true);
-            sound.setVolume(0.5);
+            sound.setVolume(0.3);
             sound.play();
         });
     }
