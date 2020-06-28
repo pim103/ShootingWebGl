@@ -11,7 +11,7 @@ export class Scene {
     textureLoader;
 
     objectInScene;
-    mixer;
+    mixers;
     clock;
 
     spheres;
@@ -25,6 +25,7 @@ export class Scene {
         this.control = new Control();
 
         this.clock = new THREE.Clock();
+        this.mixers = [];
 
         this.camera.initCamera();
         this.control.initControl(this.camera.getCamera());
@@ -72,6 +73,7 @@ export class Scene {
         // this.createSpheres();
         // this.createCube();
         this.importGLTF("ShootingScene", "gltf");
+        this.importGLTF("eagle", "gltf");
         this.importGLTF("canPos", "glb");
     }
 
@@ -117,11 +119,13 @@ export class Scene {
             obj.scale.y *= 8;
             obj.scale.z *= 8;
 
-            this.mixer = new THREE.AnimationMixer(obj);
+            const mixer = new THREE.AnimationMixer(obj);
 
             gltf.animations.forEach((animation) => {
-                this.mixer.clipAction(animation).play();
+                mixer.clipAction(animation).play();
             });
+
+            this.mixers.push(mixer);
 
             this.objectInScene.push(obj);
             this.scene.add(obj);
@@ -133,9 +137,9 @@ export class Scene {
 
         var delta = this.clock.getDelta();
 
-        if (this.mixer != undefined) {
-            this.mixer.update(delta);
-        }
+        this.mixers.forEach((mixer) => {
+            mixer.update(delta);
+        });
 
         const timer = 0.0001 * Date.now();
         // for (let i = 0; i < this.spheres.length; i++) {
