@@ -117,10 +117,11 @@ export class Scene {
             obj.scale.y *= 8;
             obj.scale.z *= 8;
 
-            if (format == "gltf") {
-                this.mixer = new THREE.AnimationMixer(obj);
-                this.mixer.clipAction(gltf.animations[0]).play();
-            }
+            this.mixer = new THREE.AnimationMixer(obj);
+
+            gltf.animations.forEach((animation) => {
+                this.mixer.clipAction(animation).play();
+            });
 
             this.objectInScene.push(obj);
             this.scene.add(obj);
