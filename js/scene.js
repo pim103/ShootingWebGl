@@ -71,16 +71,17 @@ export class Scene {
 
         // this.createSpheres();
         // this.createCube();
-        this.importGLTF();
+        this.importGLTF("ShootingScene", "gltf");
+        this.importGLTF("canPos", "glb");
     }
 
     initBackground() {
         const path = "imgs/skybox/";
-        const format = ".jpg";
+        const format = ".png";
         const urls = [
-            path + 'posx' + format, path + 'negx' + format,
-            path + 'posy' + format, path + 'negy' + format, 
-            path + 'posz' + format, path + 'negz' + format
+            path + 'right' + format, path + 'left' + format,
+            path + 'top' + format, path + 'bottom' + format, 
+            path + 'back' + format, path + 'front' + format
         ];
 
         const textureBackground = new THREE.CubeTextureLoader().load(urls);
@@ -97,12 +98,12 @@ export class Scene {
         this.scene.add(cube);
     }
 
-    importGLTF() {
+    importGLTF(name, format) {
         let obj;
 
         const loader = new GLTFLoader()
             .setPath('../obj/');
-        loader.load('ShootingScene.gltf', (gltf) => {
+        loader.load(name + "." + format, (gltf) => {
             obj = gltf.scene;
             obj.traverse((child) => {
                 if (child.isMesh) {
@@ -117,7 +118,10 @@ export class Scene {
             obj.scale.z *= 8;
 
             this.mixer = new THREE.AnimationMixer(obj);
-            this.mixer.clipAction(gltf.animations[0]).play();
+
+            gltf.animations.forEach((animation) => {
+                this.mixer.clipAction(animation).play();
+            });
 
             this.objectInScene.push(obj);
             this.scene.add(obj);
@@ -128,7 +132,10 @@ export class Scene {
         this.control.playIntent(this.objectInScene);
 
         var delta = this.clock.getDelta();
-        this.mixer.update(delta);
+
+        if (this.mixer != undefined) {
+            this.mixer.update(delta);
+        }
 
         const timer = 0.0001 * Date.now();
         // for (let i = 0; i < this.spheres.length; i++) {
