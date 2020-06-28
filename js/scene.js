@@ -72,7 +72,7 @@ export class Scene {
             this.onWindowResize();
         }, false );
 
-        // this.createSpheres();
+        this.createSpheres();
         // this.createCube();
         this.importGLTF("ShootingScene", "gltf");
         this.importGLTF("eagle", "gltf");
@@ -209,12 +209,13 @@ export class Scene {
         });
 
         const timer = 0.0001 * Date.now();
-        // for (let i = 0; i < this.spheres.length; i++) {
-        //     let sphere = this.spheres[i];
-
-        //     sphere.position.x = 10 * Math.cos( timer + i );
-        //     sphere.position.y = 10 * Math.sin( timer + i * 1.1 );
-        // }
+        
+        let i = 0;
+        this.spheres.forEach(sphere => {
+            sphere.position.x = (5 * Math.cos(timer + i)) + 2;
+            sphere.position.y = (5 * Math.sin(timer + i * 1.1));
+            i++
+        })
     }
 
     render(scenePhysics) {
@@ -235,7 +236,7 @@ export class Scene {
     createSpheres() {
         this.spheres = [];
 
-        const geometry = new THREE.SphereBufferGeometry(100, 32, 16);
+        const geometry = new THREE.SphereBufferGeometry( 0.1, 32, 16 );
 
         const shader = FresnelShader;
         const uniforms = THREE.UniformsUtils.clone(shader.uniforms);
@@ -246,19 +247,17 @@ export class Scene {
             fragmentShader: shader.fragmentShader
         });
 
-        for (let i = 0; i < 500; i++) {
+        for (let i = 0; i < 300; i++) {
             const mesh = new THREE.Mesh(geometry, material);
 
-            // uniforms["tCube"].value = this.scene.background;
-
-            mesh.position.x = Math.random() * 2 + 1;
-            mesh.position.y = Math.random() * 2 + 1;
-            mesh.position.z = Math.random() * 2 + 1;
+            uniforms["tCube"].value = this.scene.background;
+            mesh.position.x = (Math.random() * 10 - 5) + 2;
+            mesh.position.y = (Math.random() * 10 - 5) - 1;
+            mesh.position.z = (Math.random() * 10 - 5) - 104;
 
             mesh.scale.x = mesh.scale.y = mesh.scale.z = Math.random() * 3 + 1;
 
             this.scene.add(mesh);
-
             this.spheres.push(mesh);
         }
     }
@@ -427,7 +426,7 @@ export class Scene {
     onWindowResize() {
 
         this.camera.getCamera().aspect = window.innerWidth / window.innerHeight;
-        this.camera.getCamera().camera.updateProjectionMatrix();
+        this.camera.getCamera().updateProjectionMatrix();
 
         this.renderer.setSize( window.innerWidth, window.innerHeight );
     }
