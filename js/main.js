@@ -20,6 +20,6 @@ $('document').ready(() => {
     		scenePhysics.initInput(currentScene, scenePhysics);
 		} );
     
-    // currentScene.createObjects(scenePhysics);
+    currentScene.createObjects(scenePhysics);
     animate(currentScene);
 });

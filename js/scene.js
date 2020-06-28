@@ -76,7 +76,6 @@ export class Scene {
         // this.createCube();
         this.importGLTF("ShootingScene", "gltf");
         this.importGLTF("eagle", "gltf");
-        this.importGLTF("canPos", "glb");
         this.addWater();
     }
 
@@ -167,7 +166,7 @@ export class Scene {
         this.scene.add(cube);
     }
 
-    importGLTF(name, format) {
+    importGLTF(name, format, scenePhysics,canMass,canLength,canDepth,canHeight,numcansLength,numcansHeight,z0,pos,quat) {
         let obj;
 
         const loader = new GLTFLoader()
@@ -262,44 +261,6 @@ export class Scene {
         }
     }
 
-    createParalellepiped( sx, sy, sz, mass, pos, quat, material, scenePhysics ) {
-
-        var threeObject = new THREE.Mesh( new THREE.BoxBufferGeometry( sx, sy, sz, 1, 1, 1 ), material );
-        var shape = new Ammo.btBoxShape( new Ammo.btVector3( sx * 0.5, sy * 0.5, sz * 0.5 ) );
-        shape.setMargin( scenePhysics.margin );
-
-        threeObject.position.copy( pos );
-        threeObject.quaternion.copy( quat );
-
-        var transform = new Ammo.btTransform();
-        transform.setIdentity();
-        transform.setOrigin( new Ammo.btVector3( pos.x, pos.y, pos.z ) );
-        transform.setRotation( new Ammo.btQuaternion( quat.x, quat.y, quat.z, quat.w ) );
-        var motionState = new Ammo.btDefaultMotionState( transform );
-
-        var localInertia = new Ammo.btVector3( 0, 0, 0 );
-        shape.calculateLocalInertia( mass, localInertia );
-
-        var rbInfo = new Ammo.btRigidBodyConstructionInfo( mass, motionState, shape, localInertia );
-        var body = new Ammo.btRigidBody( rbInfo );
-
-        threeObject.userData.physicsBody = body;
-
-        this.getScene().add( threeObject );
-
-        if ( mass > 0 ) {
-
-            scenePhysics.rigidBodies.push( threeObject );
-
-            // Disable deactivation
-            body.setActivationState( 4 );
-
-        }
-
-        scenePhysics.physicsWorld.addRigidBody( body );
-
-        return threeObject;
-    }
 
     createObjects(scenePhysics) {
 
@@ -307,11 +268,11 @@ export class Scene {
         var quat = new THREE.Quaternion();
 
         // Ground
-        pos.set( 0, -2, 0 );
+        pos.set( 0, -3.95, 0 );
         quat.set( 0, 0, 0, 1 );
         //var ground = createParalellepiped( 40, 1, 40, 0, pos, quat, new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ), scenePhysics);
-        var ground = new THREE.Mesh( new THREE.BoxBufferGeometry( 40, 1, 40, 1, 1, 1 ), new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ) );
-        var shape = new Ammo.btBoxShape( new Ammo.btVector3( 40 * 0.5, 1 * 0.5, 40 * 0.5 ) );
+        var ground = new THREE.Mesh( new THREE.BoxBufferGeometry( 230, 1, 230, 1, 1, 1 ), new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ) );
+        var shape = new Ammo.btBoxShape( new Ammo.btVector3( 230 * 0.5, 1 * 0.5, 230 * 0.5 ) );
         shape.setMargin( scenePhysics.margin );
 
         ground.position.copy( pos );
@@ -336,46 +297,72 @@ export class Scene {
 
         scenePhysics.physicsWorld.addRigidBody( body );
 
-        var brickMass = 0.5;
-        var brickLength = 1.2;
-        var brickDepth = 0.6;
-        var brickHeight = brickLength * 0.5;
-        var numBricksLength = 6;
-        var numBricksHeight = 4;
-        var z0 = - numBricksLength * brickLength * 0.5;
-        pos.set( 1, brickHeight * 0.5 -1.5, z0 );
+        pos.set( 0.3, -0.2, -28 );
         quat.set( 0, 0, 0, 1 );
-        for ( var j = 0; j < numBricksHeight; j ++ ) {
+        //var ground = createParalellepiped( 40, 1, 40, 0, pos, quat, new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ), scenePhysics);
+        var tableFloor = new THREE.Mesh( new THREE.BoxBufferGeometry( 4, 0.1, 7.2, 1, 30, 1 ), new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ) );
+        var shape = new Ammo.btBoxShape( new Ammo.btVector3( 4 * 0.5, 0.1 * 0.5, 7.2 * 0.5 ) );
+        shape.setMargin( scenePhysics.margin );
 
+        tableFloor.position.copy( pos );
+        tableFloor.quaternion.copy( quat );
+        tableFloor.rotation.x = 0;
+        tableFloor.rotation.y = -280;
+        tableFloor.rotation.z = 0;
+
+        transform = new Ammo.btTransform();
+        transform.setIdentity();
+        transform.setOrigin( new Ammo.btVector3( pos.x, pos.y, pos.z ) );
+        transform.setRotation( new Ammo.btQuaternion( quat.x, -280, quat.z, quat.w ) );
+        var motionState = new Ammo.btDefaultMotionState( transform );
+
+        var localInertia = new Ammo.btVector3( 0, 0, 0 );
+        shape.calculateLocalInertia( 0, localInertia );
+
+        var rbInfo = new Ammo.btRigidBodyConstructionInfo( 0, motionState, shape, localInertia );
+        var body = new Ammo.btRigidBody( rbInfo );
+
+        tableFloor.userData.physicsBody = body;
+
+        this.objectInScene.push(tableFloor);
+        this.getScene().add(tableFloor);
+
+        scenePhysics.physicsWorld.addRigidBody( body );
+
+        var canMass = 0.5;
+        var canLength = 1.2;
+        var canDepth = 0.6;
+        var canHeight = canLength * 0.8;
+        var numcansLength = 5;
+        var numcansHeight = 2;
+        var z0 = - numcansLength * canLength * 0.5 - 28;
+        pos.set( 1, canHeight * 0.5, z0 );
+        quat.set( 0, 0, 0, 1 );
+        //this.importGLTF("canPos", "glb", scenePhysics,canMass,canLength,canDepth,canHeight,numcansLength,numcansHeight,z0,pos,quat);
+        for ( var j = 0; j < numcansHeight; j ++ ) {
             var oddRow = ( j % 2 ) == 1;
-
             pos.z = z0;
-
             if ( oddRow ) {
-
-                pos.z -= 0.25 * brickLength;
-
+                pos.z -= 0.4 * canLength;
             }
 
-            var nRow = oddRow ? numBricksLength + 1 : numBricksLength;
+            var nRow = oddRow ? numcansLength + 1 : numcansLength;
             for ( var i = 0; i < nRow; i ++ ) {
-
-                var brickLengthCurrent = brickLength;
-                var brickMassCurrent = brickMass;
+                var canLengthCurrent = canLength;
+                var canMassCurrent = canMass;
                 if ( oddRow && ( i == 0 || i == nRow - 1 ) ) {
-
-                    brickLengthCurrent *= 0.5;
-                    brickMassCurrent *= 0.5;
-
+                    canLengthCurrent *= 0.5;
+                    canMassCurrent *= 0.5;
                 }
 
-                //var brick = createParalellepiped( brickDepth, brickHeight, brickLengthCurrent, brickMassCurrent, pos, quat, createMaterial() );
-                var brick = new THREE.Mesh( new THREE.BoxBufferGeometry( brickDepth, brickHeight, brickLengthCurrent, 1, 1, 1 ), new THREE.MeshPhongMaterial( { color: 0xFFFFFF } ) );
-                shape = new Ammo.btBoxShape( new Ammo.btVector3( brickDepth * 0.5, brickDepth * 0.5, brickDepth * 0.5 ) );
+                //var can = createParalellepiped( canDepth, canHeight, canLengthCurrent, canMassCurrent, pos, quat, createMaterial() );
+                var can = new THREE.Mesh( new THREE.CylinderBufferGeometry( 0.5, 0.5, 1, 32 ), new THREE.MeshPhongMaterial( { color: Math.floor( Math.random() * ( 1 << 24 ) ) } ) );
+                //var can = new THREE.Mesh( new THREE.CylinderBufferGeometry( 0.5, 0.5, 1, 32 ), new THREE.MeshPhongMaterial( { color: '0x'+Math.floor(Math.random()*16777215).toString(16) } ) );
+                shape = new Ammo.btCylinderShape( new Ammo.btVector3( 0.5 * 0.5, 0.5, 0.5 * 0.5 ) );
                 shape.setMargin( scenePhysics.margin );
 
-                brick.position.copy( pos );
-                brick.quaternion.copy( quat );
+                can.position.copy( pos );
+                can.quaternion.copy( quat );
 
                 var transform = new Ammo.btTransform();
                 transform.setIdentity();
@@ -384,19 +371,19 @@ export class Scene {
                 var motionState = new Ammo.btDefaultMotionState( transform );
 
                 var localInertia = new Ammo.btVector3( 0, 0, 0 );
-                shape.calculateLocalInertia( brickMassCurrent, localInertia );
+                shape.calculateLocalInertia( canMassCurrent, localInertia );
 
-                var rbInfo = new Ammo.btRigidBodyConstructionInfo( brickMassCurrent, motionState, shape, localInertia );
+                var rbInfo = new Ammo.btRigidBodyConstructionInfo( canMassCurrent, motionState, shape, localInertia );
                 var body = new Ammo.btRigidBody( rbInfo );
 
-                brick.userData.physicsBody = body;
+                can.userData.physicsBody = body;
 
-                this.objectInScene.push(brick)
-                this.getScene().add(brick);
+                this.objectInScene.push(can)
+                this.getScene().add(can);
 
-                if ( brickMassCurrent > 0 ) {
+                if ( canMassCurrent > 0 ) {
 
-                    scenePhysics.rigidBodies.push(brick);
+                    scenePhysics.rigidBodies.push(can);
 
                     // Disable deactivation
                     body.setActivationState( 4 );
@@ -404,21 +391,22 @@ export class Scene {
 
                 scenePhysics.physicsWorld.addRigidBody( body );
 
-                brick.castShadow = true;
-                brick.receiveShadow = true;
+                can.castShadow = true;
+                can.receiveShadow = true;
+                //this.importGLTF("canPos", "glb", scenePhysics,canMass,canLength,canDepth,canHeight,numcansLength,numcansHeight,z0,pos,quat);
 
                 if ( oddRow && ( i == 0 || i == nRow - 2 ) ) {
 
-                    pos.z += 0.75 * brickLength;
+                    pos.z += 0.75 * canLength;
 
                 } else {
 
-                    pos.z += brickLength;
+                    pos.z += canLength;
 
                 }
 
             }
-            pos.y += brickHeight;
+            pos.x += canHeight;
 
         }
     }
