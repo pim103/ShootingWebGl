@@ -71,7 +71,8 @@ export class Scene {
 
         // this.createSpheres();
         // this.createCube();
-        this.importGLTF();
+        this.importGLTF("ShootingScene", "gltf");
+        this.importGLTF("canPos", "glb");
     }
 
     initBackground() {
@@ -97,12 +98,12 @@ export class Scene {
         this.scene.add(cube);
     }
 
-    importGLTF() {
+    importGLTF(name, format) {
         let obj;
 
         const loader = new GLTFLoader()
             .setPath('../obj/');
-        loader.load('ShootingScene.gltf', (gltf) => {
+        loader.load(name + "." + format, (gltf) => {
             obj = gltf.scene;
             obj.traverse((child) => {
                 if (child.isMesh) {
@@ -116,8 +117,10 @@ export class Scene {
             obj.scale.y *= 8;
             obj.scale.z *= 8;
 
-            this.mixer = new THREE.AnimationMixer(obj);
-            this.mixer.clipAction(gltf.animations[0]).play();
+            if (format == "gltf") {
+                this.mixer = new THREE.AnimationMixer(obj);
+                this.mixer.clipAction(gltf.animations[0]).play();
+            }
 
             this.objectInScene.push(obj);
             this.scene.add(obj);
@@ -128,7 +131,10 @@ export class Scene {
         this.control.playIntent(this.objectInScene);
 
         var delta = this.clock.getDelta();
-        this.mixer.update(delta);
+
+        if (this.mixer != undefined) {
+            this.mixer.update(delta);
+        }
 
         const timer = 0.0001 * Date.now();
         // for (let i = 0; i < this.spheres.length; i++) {
